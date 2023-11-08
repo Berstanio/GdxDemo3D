@@ -6,13 +6,18 @@ sourceSets.main.java.srcDirs = [ "src/" ]
 project.ext.mainClassName = "com.mygdx.game.desktop.DesktopLauncher"
 project.ext.assetsDir = new File("../android/assets");
 
+def os = System.properties['os.name'].toLowerCase()
+
 task run(dependsOn: classes, type: JavaExec) {
     main = project.mainClassName
     classpath = sourceSets.main.runtimeClasspath
     standardInput = System.in
     workingDir = project.assetsDir
     ignoreExitValue = true
-    jvmArgs += "-XstartOnFirstThread"
+    if (os.contains('mac')) {
+		// Required to run LWJGL3 Java apps on MacOS
+		jvmArgs += "-XstartOnFirstThread"
+	}
 }
 
 task dist(type: Jar) {
